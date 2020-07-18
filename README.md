@@ -27,7 +27,7 @@ To expose it to your local network (i.e. the kids' computers):
 ```
 flask run --host=0.0.0.0
 ```
-Then it's available at <your network ip>:5000
+Then it's available at \<your network ip>:5000
 
 ## First Run
 
