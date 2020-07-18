@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% include "navbar.html" %}
+
+<div class="container">
+    <div class="row col-md">
+        <div id="alert-box" class="container col-md-6">
+            <div id="alert-area" class="alert alert-light" role="alert">
+                <h1 id="alert-message" style="text-align: center;">You can do it {{ current_user.name }}!</h1>
+            </div>
+        </div>
+    </div>
+    <div class="row col-md">
+        <div class="container col-md-4" style="border:2px solid #cecece;">
+            <div class="form-group text-right">
+                <h1 id="top-number" class="display-1">  10</h1>
+            </div>
+            <div class="form-group text-right">
+                <h1 id="bottom-number" class="display-1">+ 20</h1>
+                <hr style="width: 100%; color: black; height: 5px; background-color:black;">
+            </div>
+            <div class="form-group text-right">
+                <input id="answer" type="text" class="form-control input-lg" style="direction: rtl; font-size: 90px;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#answer').keypress(function(evt) {
+        var keycode = (evt.keyCode ? event.keyCode : event.which);
+        if(keycode == '13') {
+            check_answer();
+        }
+    })
+
+    new_problem();
+
+    $.post({
+        url: "get_high_streak",
+        data: "",
+        success: function(data) {
+            upd_high_streak(data['high_streak']);
+        },
+        dataType: "json"
+    })
+});
+
+function success_message(msg, msg2) {
+    $('#alert-area').fadeOut(500, function() {
+        $(this).removeClass('alert-light');
+        $(this).removeClass('alert-danger');
+        $(this).addClass('alert-success');
+        $('#alert-message').text(msg);
+    })
+    $('#alert-area').fadeIn('slow');
+    $('#alert-area').fadeOut(500, function() {
+        $(this).removeClass('alert-success');
+        $(this).removeClass('alert-danger');
+        $(this).addClass('alert-light');
+        $('#alert-message').text(msg2);
+    })
+    $('#alert-area').fadeIn('slow');
+}
+
+function failure_message(msg, msg2) {
+    $('#alert-area').fadeOut(500, function() {
+        $(this).removeClass('alert-light');
+        $(this).removeClass('alert-success');
+        $(this).addClass('alert-danger');
+        $('#alert-message').text(msg);
+    })
+    $('#alert-area').fadeIn('slow');
+    $('#alert-area').fadeOut(500, function() {
+        $(this).removeClass('alert-danger');
+        $(this).removeClass('alert-success');
+        $(this).addClass('alert-light');
+        $('#alert-message').text(msg2);
+    })
+    $('#alert-area').fadeIn('slow');
+}
+
+function upd_streak(newval) {
+    $('#streak-span').fadeOut(500, function() {
+        $(this).text(newval);
+    });
+    $('#streak-span').fadeIn('slow');
+}
+
+function upd_high_streak(newval) {
+    $('#high-streak-span').fadeOut(500, function() {
+        $(this).text(newval);
+    });
+    $('#high-streak-span').fadeIn('slow');
+}
+
+function new_problem() {
+    $.post({
+        url: "new_problem",
+        data: "",
+        success: function(data) {
+            $('#top-number').text(data['top']);
+            $('#bottom-number').text(data['oper'] + ' ' + data['bottom']);
+            $('#answer').val('');
+        },
+        dataType: "json"
+    })
+}
+
+function check_answer() {
+    var fd = new FormData();
+    fd.append('top', $('#top-number').text());
+    var bottom_line = $('#bottom-number').text()
+    tokens = bottom_line.split(' ');
+
+    fd.append('bottom', tokens[1]);
+    fd.append('oper', tokens[0]);
+    fd.append('answer', $('#answer').val());
+
+    $.post({
+        url: "check_answer",
+        data: fd,
+        processData: false,
+        contentType: false,
+        success: function(data) {
+
+            if(data['success']) {
+                success_message(data['alert_msg'], data['enc_msg'])
+            }
+            else {
+                failure_message(data['alert_msg'], data['enc_msg'])
+            }
+
+            $('#top-number').text(data['top']);
+            $('#bottom-number').text(data['oper'] + ' ' + data['bottom']);
+            $('#answer').val('');
+
+            upd_streak(data['streak']);
+            if(data['high_streak']) {
+                upd_high_streak(data['high_streak']);
+            }
+        },
+        dataType: "json"
+    })
+}
+</script>
+
+{% endblock %}

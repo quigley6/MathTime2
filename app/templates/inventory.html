@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <ul class="nav nav-tabs">
+        <li class="nav-item" id="materials-tab" data-toggle="tab">
+            <a class="nav-link active" data-toggle="tab" role="tab" href="#materials">Materials</a>
+        </li>
+        <li class="nav-item" id="items-tab">
+            <a class="nav-link" data-toggle="tab" role="tab" href="#items">Items</a>
+        </li>
+    </ul>
+    <div class="row">&nbsp</div>
+    <div class="tab-content" id="inv-content">
+        <div class="tab-pane fade show active" id="materials" role="tabpanel">
+            <table class="table table-striped" id="materials-table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col"><button type="button" class="btn btn-dark" data-toggle="modal" data-target="#add_material_modal">+</button> #</th>
+                        <th scope="col-2">Description</th>
+                        <th scope="col">Cost</th>
+                        <th scope="col">Used</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="tab-pane fade" id="items" role="tabpanel">
+            <table class="table table-striped" id="items-table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col"><button type="button" class="btn btn-dark" data-toggle="modal" data-target="#add_item_modal">+</button> #</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Thumbnail</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#multi').multiselect();
+    });
+    update_materials();
+    update_items();
+    $('#materials-tab a').on('click', function(e) {
+        update_materials();
+        $(this).tab('show');
+    })
+    $('#items-tab a').on('click', function(e) {
+        update_items()
+        $(this).tab('show');
+    })
+
+    $('#materials-table tbody').on('click', 'button', function() {
+        var material_id = $(this).parents('tr').find('td')[0].textContent;
+        $('#material-delete-id').val(material_id);
+        $('#deleteMaterialModal').modal('show');
+    })
+
+    $('#items-table tbody').on('click', 'button', function() {
+        var item_id = $(this).parents('tr').find('td')[0].textContent;
+        $('#item-delete-id').val(item_id);
+        $('#deleteItemModal').modal('show');
+    })
+
+    function update_materials() {
+        $.post({
+            url: "get_unused_materials",
+            data: "",
+            success: function(data) {
+                var tbl = $('#materials-table tbody');
+                tbl.empty();
+                $.each(data, function(idx, elem) {
+                    used = data[idx]['item_id'] == undefined ? "No" : "Yes"
+                    tbl.append("<tr><td>" + data[idx]['id'] + "</td><td>" + data[idx]['description'] + "</td><td>" + data[idx]['cost'] + "</td><td>" + used  + "</td><td><button class=\"btn btn-outline-danger btn-sm\"><span class=\"fa fa-trash-alt\"></span>&nbsp</button></td></tr>")
+                });
+            },
+            dataType: "json"
+        })
+    }
+
+    function update_items() {
+        $.post({
+            url: "get_all_items",
+            data: "",
+            success: function(data) {
+                var tbl = $('#items-table tbody');
+                tbl.empty();
+                $.each(data, function(idx, elem) {
+                    tbl.append("<tr><td>" + data[idx]['id'] + "</td><td>" + data[idx]['name'] + "</td><td><img src=\"data:image/png;base64," + data[idx]['picture'] + "\" height=\"50\" width=\"50\"></td><td><button class=\"btn btn-outline-danger btn-sm\"><span class=\"fa fa-trash-alt\"></span>&nbsp</button></td></tr>")
+                });
+            },
+            dataType: "json"
+        })
+    }
+
+    
+</script>
+
+{% include 'inv_modals.html' %}
+
+{% endblock %}

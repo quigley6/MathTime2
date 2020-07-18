@@ -1,0 +1,119 @@
+
+{% block navbar %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">MathTime2</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#settingsModal" id="lnk-settings" data-toggle="modal">Settings</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Current Streak: <span id="streak-span">0</span></a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+                <a class="nav-link active" href="#" >Highest Streak: <span id="high-streak-span">0</span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link active" href="logout" >Logout</a>
+            </li>
+            
+        </ul>
+      </div>
+    </nav>
+<div class=row>&nbsp</div>
+
+<div class="modal fade" id="settingsModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="settingsLabel">Delete Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <dl>
+                    <dt>Operations</dt>
+                    <dd>
+                        <input type="checkbox" id="add_check" name="add_check">
+                        <label for="add_check">Addition</label><br/>
+                        <input type="checkbox" id="sub_check" name="sub_check">
+                        <label for="sub_check">Subtraction</label><br/>
+                        <input type="checkbox" id="mul_check" name="mul_check">
+                        <label for="mul_check">Multiplication</label><br/>
+                    </dd>
+                    <dt>Numbers</dt>
+                    <dd>
+                        <label for="max_num">Max Number</label>: <input type="text" length="2" id="max_num" name="max_num">
+                        <label for="neg_check">Negative Answers Allowed</label>: <input type="checkbox" id="neg_check" name="neg_check"><br/>
+                    </dd>
+                    <dt>Answers</dt>
+                    <dd>
+                        <label for="retry_check">Retry Incorrect Answers</label>: <input type="checkbox" id="retry_check" name="retry_check"><br/>
+                    </dd>
+                </dl>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btn-save-settings">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#lnk-settings').on("click", function() {
+        $.post({
+            url: "get_settings",
+            data: "",
+            success: function(data) {
+                $('#add_check').prop("checked", data['add'] == 'true');
+                $('#sub_check').prop("checked", data['sub'] == 'true');
+                $('#mul_check').prop("checked", data['mul'] == 'true');
+                $('#max_num').val(data['max']);
+                $('#neg_check').prop("checked", data['neg'] == 'true');
+                $('#retry_check').prop("checked", data['retry'] == 'true');
+            },
+            dataType: "json"
+        })
+    })
+    
+    $('#btn-save-settings').on("click", function() {
+        var fd = new FormData();
+
+        if($('#max_num').val() != '') {
+            fd.append('max', $('#max_num').val());
+        }
+        else {
+            fd.append('max', '20');
+        }
+
+        fd.append('add', $('#add_check').is(":checked"));
+        fd.append('sub', $('#sub_check').is(":checked"));
+        fd.append('mul', $('#mul_check').is(":checked"));
+        
+        fd.append('neg', $('#neg_check').is(":checked"));
+        fd.append('retry', $('#retry_check').is(":checked"));
+
+        $.post({
+            url: "update_settings",
+            data: fd,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('#settingsModal').modal('hide');
+            },
+            dataType: "json"
+        })
+    })
+});
+</script>
+
+{% endblock %}
