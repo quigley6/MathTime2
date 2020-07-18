@@ -2,7 +2,7 @@
 
 A simple python Flask-based web app for early elementary math practice.
 
-![Main Screen](https://raw.githubusercontent.com/quigley6/MathTime2/master/doc/main_screen.png?token=ACQXGN7YOAGCMXMVAO34KH27CMWVW)
+![Main Screen](https://raw.githubusercontent.com/quigley6/MathTime2/master/doc/main_screen.png?token=ACQXGN6RQSNY3HORRQNTAY27CMYJU)
 
 ## Installation
 
