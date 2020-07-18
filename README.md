@@ -35,4 +35,4 @@ You'll need to register your little ones. Click the registration link on the log
 
 Once your child is logged in, be sure to check the Settings in the upper left, and tailor the practice problems to your child's needs. Each child has their own settings.
 
-![Settings](https://raw.githubusercontent.com/quigley6/MathTime2/master/doc/settings.png?token=ACQXGN56HQFEY3MGUAIL2VK7CMXXW)
+![Settings](https://raw.githubusercontent.com/quigley6/MathTime2/master/doc/settings.png?token=ACQXGN5NKMEEJELYZCUTF227CMYSY)
