@@ -90,6 +90,13 @@ function upd_streak(newval) {
     $('#streak-span').fadeIn('slow');
 }
 
+function upd_solved(newval) {
+    $('#solved-span').fadeOut(500, function() {
+        $(this).text(newval);
+    });
+    $('#solved-span').fadeIn('slow');
+}
+
 function upd_high_streak(newval) {
     $('#high-streak-span').fadeOut(500, function() {
         $(this).text(newval);
@@ -139,6 +146,7 @@ function check_answer() {
             $('#answer').val('');
 
             upd_streak(data['streak']);
+            upd_solved(data['solved']);
             if(data['high_streak']) {
                 upd_high_streak(data['high_streak']);
             }

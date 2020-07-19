@@ -58,6 +58,7 @@ def login():
             return redirect(url_for('login'))
         login_user(user, remember=False)
         session['streak'] = 0
+        session['solved'] = 0
         return redirect(url_for('index'))
     return render_template('login.html', title='Sign In', form=form)
 
@@ -194,7 +195,9 @@ def check_answer():
         if not retval['success']:
             session['streak'] = 0
         else:
+            session['solved'] += 1
             session['streak'] += 1
+        retval['solved'] = session['solved']
         retval['streak'] = session['streak']
 
         if session['streak'] > player.streak:
