@@ -53,7 +53,8 @@
                     </dd>
                     <dt>Numbers</dt>
                     <dd>
-                        <label for="max_num">Max Number</label>: <input type="text" length="2" id="max_num" name="max_num">
+                        <label for="max_num">Max Number</label>: <input type="text" length="2" id="max_num" name="max_num"><br/>
+                        <label for="min_num">Min Number</label>: <input type="text" length="2" id="min_num" name="min_num"><br/>
                         <label for="neg_check">Negative Answers Allowed</label>: <input type="checkbox" id="neg_check" name="neg_check"><br/>
                     </dd>
                     <dt>Answers</dt>
@@ -81,6 +82,7 @@ $(document).ready(function() {
                 $('#sub_check').prop("checked", data['sub'] == 'true');
                 $('#mul_check').prop("checked", data['mul'] == 'true');
                 $('#max_num').val(data['max']);
+                $('#min_num').val(data['min']);
                 $('#neg_check').prop("checked", data['neg'] == 'true');
                 $('#retry_check').prop("checked", data['retry'] == 'true');
             },
@@ -96,6 +98,13 @@ $(document).ready(function() {
         }
         else {
             fd.append('max', '20');
+        }
+
+        if($('#min_num').val() != '') {
+            fd.append('min', $('#min_num').val());
+        }
+        else {
+            fd.append('min', '0');
         }
 
         fd.append('add', $('#add_check').is(":checked"));

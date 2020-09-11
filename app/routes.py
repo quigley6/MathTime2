@@ -101,13 +101,14 @@ def generate_problem():
     settings = player.settings
 
     max_num = int(settings['max'])
+    min_num = int(settings['min'])
 
-    top = random.randint(0, max_num)
+    top = random.randint(min_num, max_num)
 
     if settings['neg'] == 'true':
-        bottom = random.randint(0, max_num)
+        bottom = random.randint(min_num, max_num)
     else:
-        bottom = random.randint(0, top)
+        bottom = random.randint(min_num, top)
 
     opers = []
     if settings['add'] == 'true':
@@ -229,6 +230,7 @@ def update_settings():
     settings['sub'] = request.values.get('sub')
     settings['mul'] = request.values.get('mul')
     settings['max'] = request.values.get('max')
+    settings['min'] = request.values.get('min')
     settings['neg'] = request.values.get('neg')
     settings['retry'] = request.values.get('retry')
 
@@ -236,6 +238,11 @@ def update_settings():
         int(settings['max'])
     except:
         return jsonify({'msg':'invalid max_number'})
+
+    try:
+        int(settings['min'])
+    except:
+        return jsonify({'msg':'invalid min_number'})
 
     player.settings = settings
 
