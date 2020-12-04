@@ -147,7 +147,7 @@ def check_answer():
 
     if param_fail:
         retval['success'] = False
-        retval['msg'] = 'Oops, try again!'
+        retval['alert_msg'] = random.choice(FAIL_MSG)
         if player.settings.get('retry') == 'true':
             retval['bottom'] = bottom
             retval['top'] = top
