@@ -16,6 +16,8 @@ Clone this repo, then install prerequisites with:
 
 ## Launch
 
+***THIS IS NOT A PRODUCTION SERVER AND FOR YOUR DIGITAL SAFETY YOU SHOULD NOT EXPOSE IT OUTSIDE OF YOUR HOME NETWORK***
+
 Start MathTime2 as you would any flask app:
 ```
 > flask run
