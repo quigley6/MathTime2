@@ -30,12 +30,11 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#answer').keypress(function(evt) {
-        var keycode = (evt.keyCode ? event.keyCode : event.which);
-        if(keycode == '13' && $('#answer').val() != '') {
+    $('#answer').on('keypress', function(evt) {
+        if(evt.keyCode == '13' && $('#answer').val() != '') {
             check_answer();
         }
-    })
+    });
 
     new_problem();
 
