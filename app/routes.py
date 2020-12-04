@@ -89,13 +89,6 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
-    # settings['add'] = request.values.get('add')
-    # settings['sub'] = request.values.get('sub')
-    # settings['mul'] = request.values.get('mul')
-    # settings['max'] = request.values.get('max')
-    # settings['neg'] = request.values.get('neg')
-    # settings['retry'] = request.values.get('retry')
-
 def generate_problem():
     player = Player.query.filter_by(id=current_user.id).first()
     settings = player.settings
@@ -143,18 +136,25 @@ def check_answer():
     bottom = int(request.values.get('bottom'))
     oper = request.values.get('oper')
     
+    # breakpoint()
     try:
         answer = int(request.values.get('answer'))
     except:
         param_fail = True
 
     retval = {}
+    player = Player.query.filter_by(id=current_user.id).first()
 
     if param_fail:
         retval['success'] = False
         retval['msg'] = 'Oops, try again!'
-        next_prob = generate_problem()
-        retval = {**retval, **next_prob}
+        if player.settings.get('retry') == 'true':
+            retval['bottom'] = bottom
+            retval['top'] = top
+            retval['oper'] = oper
+        else:
+            next_prob = generate_problem()
+            retval = {**retval, **next_prob}
 
     else:
         if oper == '+':
@@ -183,7 +183,6 @@ def check_answer():
 
         retval['enc_msg'] = random.choice(ENC_MSG)
 
-        player = Player.query.filter_by(id=current_user.id).first()
         if not retval['success'] and player.settings.get('retry') == 'true':
             next_prob = {
                 'top': top,
